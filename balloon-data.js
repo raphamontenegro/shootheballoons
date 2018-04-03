@@ -10,7 +10,7 @@ function Balloon () {
   self.img = null;
   self.domElem = null;
   self.speed = Game.prototype.speed;
-  self.move();
+  self.move;
 };
 
 //-------------- Moves the balloon in a vertical position--------------//

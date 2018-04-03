@@ -1,38 +1,65 @@
 'use strict'
+var SPEED = 1;
 
 //----------- Game Constructor -----------------//
 
 function Game () {
   var self = this;
 
-  self.setBoard();
-
   self.player = new Player();
 
-  self.arrow = new Arrow();
+  self.arrow = null;
   self.arrowsLeft = 20;
-  self.shootArrow();
-  self.createArrow();
 
-  self.speed = 1;
+  self.balloons = [1];
 
-  self.balloons = [];
-  self.createBalloon();
-
-  self.checkCollision();
-  self.winLose();
+  self.intervalId = null;
   
-  self.update(event);
+  self.start();
+};
+
+
+Game.prototype.handleKeyDown = function (event) {
+  var self = this;
+  console.log(event.key)
+  
+  if (event.key === ' ') {
+    self.shootArrow();
+  }
+
+  if (event.key === 'ArrowUp') {
+    self.player.direction = 'up';
+  } else if (event.key === 'ArrowDown') {
+    self.player.direction = 'down';
+  }
+
+}
+
+Game.prototype.onEnded = function (cb) {
+  var self = this;
+  self.callback = cb;
+}
+
+
+//-------------- Win/Lose Condition ----------------------//
+
+Game.prototype.isWin = function() {
+  var self = this;
+  if (self.balloons.length === 0) {
+    return true;
+  } else {
+    return false;
+  }
 };
 
 //------------------ Creates 10 Balloon objects and adds them to the balloons array ------------//
 
-Game.prototype.createBalloon() = function () {
+Game.prototype.createBalloon = function () {
   var self = this;
 
-  for (var i = 0; i < 10; i++) {
-    self.balloons.push(new Balloon);
-  }
+  // for (var i = 0; i < 10; i++) {
+  //   self.balloons.push(new Balloon);
+  // }
 };
 
 
@@ -40,28 +67,40 @@ Game.prototype.createBalloon() = function () {
 
 Game.prototype.shootArrow = function () {
   var self = this;
-  
-  self.createArrow();
-  self.arrowsLeft -= 1;
-  self.update();
+  if (!self.arrow) {
+    console.log("ok")
+    self.createArrow();
+    self.arrowsLeft -= 1;
+  }
 };
+
+
+//-------------- Creates a new Arrow -----------------//
+
+Game.prototype.createArrow = function () {
+  var self = this;
+
+  self.arrow = new Arrow(self.player.x, self.player.y);
+}
 
 
 //--------- Collision Behavior-----------//
 
 Game.prototype.checkCollision = function (arrow, balloon) {
-  if (arrow.getPosition() === balloon.getPosition()) {
-    Balloon.prototype.hasCollided = true;
-  } else {
-    Balloon.prototype.hasCollided = false;
-  }
+  // if (arrow.move() === balloon.move()) {
+  //   Balloon.prototype.hasCollided = true;
+  // } else {
+  //   Balloon.prototype.hasCollided = false;
+  // }
 }
 
 
-//---------------- Win/Lose Condition ------------------//
+//---------------- Checks if the game has ended ------------------//
 
-Game.prototype.winLose = function () {
-  if (self.balloons.length === 0 && self.arrowsLeft >= 1) {
+Game.prototype.isOver = function () {
+  var self = this;
+  if (self.balloons.length === 0 || self.arrowsLeft === 0) {
+    console.log("ended");
     return true;
   } else {
     return false;
@@ -71,34 +110,48 @@ Game.prototype.winLose = function () {
 
 //----------------- Updates the game and all of the pieces positions ---------------/
 
-Game.prototype.update = function (event) {
-  self.player.move(event);
+Game.prototype.update = function() {
+  var self = this;
+  self.player.update();
 
-  self.arrow.move(event);
-
-  self.balloons.forEach(balloon) {
-    balloon.move(event);
+  if (self.arrow) {
+    self.arrow.update();
   }
-  self.checkCollision();
-  self.update(); //not sure this is right
+
+  //   self.balloons.forEach(balloon) {
+  //     balloon.update();
+  //   }
+  // */
+  // self.checkCollision();
 }
 
 
-
-//------------- Ses the gridboard so the pieces can move ----------//
-
-Game.prototype.setBoard = function () {
+//---------------- Renders the objects of the game ------------------//
+Game.prototype.render = function () {
   var self = this;
+  self.player.render();
 
-
-  //------------------ For Loop that creates the divs ----------------------//
-
-  for (var ix = 1; ix <= 100; ix++) { // I will probably increase this to 1000 divs
-    var boardDiv = createHtml(`<div class="board-div"></div>`);
-    boardDiv.id = ix;
-    mainContent.appendChild(boardDiv);
+  if (self.arrow) { 
+    self.arrow.render();
   }
+
+//   self.balloons.forEach(balloon) {
+//     balloon.render();
+//   }
+// */
+}
+
+
+//------------------- Starts the game -----------------------//
+Game.prototype.start = function () {
+  var self = this;
+  self.intervalId = window.setInterval(function (){
+    self.update();
+    self.render();
+    //debugger;
+    if (self.isOver()) {
+      self.callback(self.isWin());
+      clearInterval(self.intervalId);
+    }
+  }, 10)
 };
-
-
-

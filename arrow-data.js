@@ -2,20 +2,27 @@
 
 //------------------ Arrow Constructor --------------//
 
-function Arrow (x, y) {
+function Arrow (playerPositionX, playerPositionY) {
   var self = this;
-  self.x = x;
-  self.y = y;
+  
+  self.x = playerPositionX;
+  self.y = playerPositionY;
+
+  self.speed = SPEED;
   self.img = null;
-  self.domElem = null;
-  self.speed = Game.prototype.speed;
-  self.move();
+  self.domElem = document.querySelector("#arrow-div");;
 };
 
 //-------------- Moves the arrow in an horizontal axis--------------//
 
 
-Player.prototype.move = function () {
- /*Need to create a time interval that moves the arrow horizontally and 
-  a condition that removes the arrow when it gets at the end of the screen */
+Arrow.prototype.update = function () {
+  var self = this;
+  self.x += 1 * self.speed;
+};
+
+Arrow.prototype.render = function() {
+  var self = this;
+  self.domElem.style.left = self.x + "px";
+  self.domElem.style.top = self.y + "px";
 };

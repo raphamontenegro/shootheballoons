@@ -31,7 +31,7 @@ function main () {
     
     introScreen = createHtml(`<div id="intro">
       <h1>Shoot the balloons and have fun</h1>
-      <button>Start game </button>
+      <div class ="button-div"><button>Start game </button></div>
       <div id="instructions">
         <p>Move the archer vertically with the up and down keys.</p>
         <p>Shoot the arrow hitting the space bar</p>
@@ -53,41 +53,61 @@ function main () {
   };
 
 
-    //----------------Adds the the game div with the whole game.-----------------//
+  //----------------Adds the the game div with the whole game.-----------------//
 
-    // var game = new Game ();
-    var gameScreen = null;
+    
+  var gameScreen = null;
+  var playerDiv = null;
+  var arrowDiv = null;
+  var balloonDiv = null;
+  var handleKeyDown = null;
 
-    function buildGameScreen() {
-    gameScreen = createHtml(`<div id="game">
+  function buildGameScreen() {
+    
+    gameScreen = createHtml(`<div id="game-screen">
       <div id="player-div">
-        <img src="https://cdn.dribbble.com/users/77598/screenshots/3927561/archer_pigeon_dribbble2_1x.png">
+        <img src="../images for the game/archer/archer.png">
       </div>
       <div id="arrow-div">
-        <img src="http://www.arrowlife.com/assets/images/logo.png">
+        <img src="../images for the game/arrow/Arrow.gif">
       </div>
       <div id="balloon-div">
-        <img src="https://www.altoastral.com.br/wp-content/uploads/2016/05/mortes-mais-bizarras-ultimos-tempos-5-750x500.jpg">
+        <img src="../images for the game/balloon/balloon-option-1.png">
       </div>
     </div>`)
 
     mainContent.appendChild(gameScreen);
-    window.setTimeout (endGame, 6000);
+
+    var game = new Game();
+
+    game.onEnded(function(isWin) {
+      endGame(isWin);
+    });
+
+    handleKeyDown = function (event) {
+      game.handleKeyDown(event);
+    }
+
+    document.body.addEventListener('keydown', handleKeyDown);
+      
+    // balloonDiv  Should I create a balloon div or just put the balloon inside of the numbered divs?
+
   };
 
 
   //--------------- Kills the game screen -----------------//
 
   function destroyGameScreen() {
-    gameScreen.remove()
+    gameScreen.remove();
+    document.removeEventListener("keydown", handleKeyDown);
   };
 
 
   //------------ Finishes the game and loads the End Game screen --------------------//
 
-  function endGame() {
+  function endGame(isWin) {
     destroyGameScreen();
-    buildEndGameScreen();
+    buildEndGameScreen(isWin);
   };
 
   var endGameScreen = null;
@@ -95,17 +115,17 @@ function main () {
 
   //---------- creates the end game screen ---------------//
 
-  function buildEndGameScreen() {
+  function buildEndGameScreen(isWin) {
     //if (game.winLose = true) {
-      if (true) {
+      if (isWin) {
       endGameScreen = createHtml(` <div id="end-game">
       <h2 class="win">Yaaaaay!! You rock!</h2>
-      <button>Click here to play again</button>
+       <div class ="button-div">><button>Click here to play again</button></div>
     </div>`);
     } else {
       endGameScreen = createHtml(` <div id="end-game">
       <h2 class="lose">You better get yourself some glasses.</h2>
-      <button>Click here to play again</button>
+      <div class="button-div"><button>Click here to play again</button></div>
       </div>`);
     }
 
