@@ -66,13 +66,13 @@ function main () {
     
     gameScreen = createHtml(`<div id="game-screen">
       <div id="player-div">
-        <img src="../images for the game/archer/archer.png">
+        <img src="../version-1/images for the game/archer/archer.png">
       </div>
       <div id="arrow-div">
-        <img src="../images for the game/arrow/Arrow.gif">
+        <img src="../version-1/images for the game/arrow/Arrow.gif">
       </div>
       <div id="balloon-div">
-        <img src="../images for the game/balloon/balloon-option-1.png">
+        <img src="../version-1/images for the game/balloon/balloon-option-1.png">
       </div>
     </div>`)
 
