@@ -3,25 +3,54 @@ var SPEED = 1;
 
 //----------- Game Constructor -----------------//
 
-function Game () {
+function Game (parentElement) {
   var self = this;
 
-  self.player = new Player();
+  self.parentElement = parentElement;
+  self.gameScreenElement = null;
+
+  self.player = null;
 
   self.arrow = null;
   self.arrowsLeft = 20;
-
-  self.balloons = [1];
+  
+  self.balloons = [];
 
   self.intervalId = null;
   
-  self.start();
+  self.score = 0;
 };
 
+//---------------------------- Creates the game -------------------------//
 
-Game.prototype.handleKeyDown = function (event) {
+Game.prototype.build = function () {
   var self = this;
-  console.log(event.key)
+
+  self.gameScreenElement = createHtml(`<div id="game-screen">
+    </div>`
+  );
+  
+
+  self.parentElement.appendChild(self.gameScreenElement);
+
+  self.handleKeyDown = function (event) {
+    self.handleActions(event);
+  }
+
+  self.player = new Player(self.gameScreenElement);
+
+  self.createBalloons();
+
+  document.addEventListener("keydown", self.handleKeyDown);
+  
+  self.start();
+} 
+
+
+//------------------ Handles all the event listeners of the game ----------------//
+Game.prototype.handleActions = function (event) {
+  var self = this;
+  console.log(event.key);
   
   if (event.key === ' ') {
     self.shootArrow();
@@ -35,10 +64,13 @@ Game.prototype.handleKeyDown = function (event) {
 
 }
 
+
+//--------------------- Checks if the game has ended --------------------//
 Game.prototype.onEnded = function (cb) {
   var self = this;
   self.callback = cb;
 }
+
 
 
 //-------------- Win/Lose Condition ----------------------//
@@ -54,12 +86,15 @@ Game.prototype.isWin = function() {
 
 //------------------ Creates 10 Balloon objects and adds them to the balloons array ------------//
 
-Game.prototype.createBalloon = function () {
+Game.prototype.createBalloons = function () {
   var self = this;
 
-  // for (var i = 0; i < 10; i++) {
-  //   self.balloons.push(new Balloon);
-  // }
+  
+
+  for (var i = 0; i < 10; i++) {
+    self.balloons.push(new Balloon(self.gameScreenElement));
+  };
+
 };
 
 
@@ -80,19 +115,38 @@ Game.prototype.shootArrow = function () {
 Game.prototype.createArrow = function () {
   var self = this;
 
-  self.arrow = new Arrow(self.player.x, self.player.y);
+  self.arrow = new Arrow(self.gameScreenElement, self.player.x, self.player.y);
 }
 
 
 //--------- Collision Behavior-----------//
 
-Game.prototype.checkCollision = function (arrow, balloon) {
+Game.prototype.checkCollision = function () {
+  var self = this;
+
+  if (self.arrow && self.arrow.x > document.body.clientWidth) {
+    self.arrow = null;
+  };
+
+  self.balloons.forEach(function(balloon) {
+    if (balloon.y <= 0) {
+      balloon.y = document.body.clientHeight;
+    }
+  });
+
+    if (self.player.y <= 0) {
+      self.player.y =0
+    } else if (self.player.y >= document.body.clientHeight) {
+      self.player.y = document.body.clientHeight;
+
+    }
+  };
   // if (arrow.move() === balloon.move()) {
   //   Balloon.prototype.hasCollided = true;
   // } else {
   //   Balloon.prototype.hasCollided = false;
   // }
-}
+
 
 
 //---------------- Checks if the game has ended ------------------//
@@ -112,21 +166,22 @@ Game.prototype.isOver = function () {
 
 Game.prototype.update = function() {
   var self = this;
+  self.checkCollision();
   self.player.update();
 
   if (self.arrow) {
     self.arrow.update();
   }
 
-  //   self.balloons.forEach(balloon) {
-  //     balloon.update();
-  //   }
-  // */
-  // self.checkCollision();
-}
+  self.balloons.forEach(function (balloon) {
+    balloon.update();
+  });
+
+};
 
 
 //---------------- Renders the objects of the game ------------------//
+
 Game.prototype.render = function () {
   var self = this;
   self.player.render();
@@ -135,14 +190,14 @@ Game.prototype.render = function () {
     self.arrow.render();
   }
 
-//   self.balloons.forEach(balloon) {
-//     balloon.render();
-//   }
-// */
+  self.balloons.forEach(function(item) {
+    item.render();
+  })
 }
 
 
 //------------------- Starts the game -----------------------//
+
 Game.prototype.start = function () {
   var self = this;
   self.intervalId = window.setInterval(function (){

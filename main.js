@@ -63,35 +63,12 @@ function main () {
   var handleKeyDown = null;
 
   function buildGameScreen() {
-    
-    gameScreen = createHtml(`<div id="game-screen">
-      <div id="player-div">
-        <img src="../version-1/images for the game/archer/archer.png">
-      </div>
-      <div id="arrow-div">
-        <img src="../version-1/images for the game/arrow/Arrow.gif">
-      </div>
-      <div id="balloon-div">
-        <img src="../version-1/images for the game/balloon/balloon-option-1.png">
-      </div>
-    </div>`)
-
-    mainContent.appendChild(gameScreen);
-
-    var game = new Game();
-
+    var game = new Game(mainContent);
+    game.build();
+  
     game.onEnded(function(isWin) {
       endGame(isWin);
     });
-
-    handleKeyDown = function (event) {
-      game.handleKeyDown(event);
-    }
-
-    document.body.addEventListener('keydown', handleKeyDown);
-      
-    // balloonDiv  Should I create a balloon div or just put the balloon inside of the numbered divs?
-
   };
 
 

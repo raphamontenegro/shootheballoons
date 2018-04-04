@@ -118,6 +118,9 @@ button {
   height: 2vh;
 }
 
+#balloon-div {
+  position: absolute;
+}
 #balloon-div img{
   height: 10vh;
 

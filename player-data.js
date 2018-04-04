@@ -2,16 +2,31 @@
 
 //-------------- Player Constructor --------------//
 
-function Player() {
+function Player(parentElement) {
   var self = this;
 
-  self.x = 0;
+  self.parentElement = parentElement;
+
+  self.x = 50;
   self.y = 0;
   self.img = null;
   self.direction = null;
-  self.domElem = document.querySelector('#player-div');
-  
+  self.playerElement =  null;
+
+  self.build(parentElement);
 };
+
+//------------- Builds the player ------------//
+Player.prototype.build = function () {
+  var self = this;
+
+  self.playerElement = createHtml(`<div id="player-div">
+    <img src="../version-1/images for the game/archer/archer.png">
+    </div>`
+  );
+
+  self.parentElement.appendChild(self.playerElement);
+}
 
 //-------------- Ability to move the player --------------//
 
@@ -33,5 +48,5 @@ Player.prototype.update = function () {
 
 Player.prototype.render = function() {
   var self = this;
-  self.domElem.style.top = self.y + 'px';
+  self.playerElement.style.top = self.y + 'px';
 };
