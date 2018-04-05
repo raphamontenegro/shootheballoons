@@ -7,13 +7,15 @@ function Balloon (parentElement) {
 
   self.parentElement = parentElement;
 
-  self.x = Math.floor(Math.random()*(700 - 300)+ 300);
-  
-  self.y = document.body.clientHeight;
+  self.x = Math.floor(Math.random()*(document.body.clientWidth - 300)+ 200);
+  self.y = /*document.body.clientHeight;*/  Math.floor(Math.random()*(document.body.clientHeight - 300)+ 200);
+  self.height = document.body.clientHeight * 0.2;
+  self.width = self.height;
+
   self.hasCollided = false;
   self.img = null;
   self.balloonElement = null;
-  
+  self.speed = SPEED;
   self.build(parentElement);
 };
 
@@ -26,9 +28,8 @@ Balloon.prototype.build = function () {
   var self = this;
 
   self.balloonElement = createHtml(`<div id="balloon-div">
-    <img src="../version-1/images for the game/balloon/balloon-option-1.png">
-    </div>`
-  );
+    <img src="./version-1/images for the game/balloon/balloon-option-1.png" height="`+self.height+`" width="`+self.width+`">
+    </div>`);
 
   self.parentElement.appendChild(self.balloonElement);
 };
@@ -38,7 +39,7 @@ Balloon.prototype.build = function () {
 Balloon.prototype.update = function () {
   var self = this;
 
-  self.y -= 1;
+  self.y += self.hasCollided ? 2 : -1;
 };
 
 Balloon.prototype.render = function() {
@@ -46,4 +47,12 @@ Balloon.prototype.render = function() {
 
   self.balloonElement.style.left = self.x + "px";
   self.balloonElement.style.top = self.y + "px";
+
+  self.balloonElement.style.opacity = self.hasCollided ? 0.5 : 1;
+};
+
+
+Balloon.prototype.destroy = function () {
+  var self = this;
+  self.balloonElement.remove();
 };

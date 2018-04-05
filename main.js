@@ -75,7 +75,7 @@ function main () {
   //--------------- Kills the game screen -----------------//
 
   function destroyGameScreen() {
-    gameScreen.remove();
+   // gameScreen.remove();
     document.removeEventListener("keydown", handleKeyDown);
   };
 
@@ -93,11 +93,10 @@ function main () {
   //---------- creates the end game screen ---------------//
 
   function buildEndGameScreen(isWin) {
-    //if (game.winLose = true) {
       if (isWin) {
       endGameScreen = createHtml(` <div id="end-game">
       <h2 class="win">Yaaaaay!! You rock!</h2>
-       <div class ="button-div">><button>Click here to play again</button></div>
+       <div class ="button-div"><button>Click here to play again</button></div>
     </div>`);
     } else {
       endGameScreen = createHtml(` <div id="end-game">
@@ -129,15 +128,4 @@ function main () {
   
 };
 
-window.addEventListener("load", main);
-
-
-//------------------ For Loop that creates the divs ----------------------//
-/*
-for (var ix = 1; ix <= 100; ix++) {
-    var boardDiv = createHtml(`<div class="board-div"></div>`);
-    boardDiv.id = ix;
-    mainContent.appendChild(boardDiv);
-  }
-  */
-  
+window.addEventListener("load", main);  

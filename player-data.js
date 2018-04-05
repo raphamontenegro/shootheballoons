@@ -9,6 +9,8 @@ function Player(parentElement) {
 
   self.x = 50;
   self.y = 0;
+  self.size = document.body.clientHeight * 0.10;
+
   self.img = null;
   self.direction = null;
   self.playerElement =  null;
@@ -21,7 +23,7 @@ Player.prototype.build = function () {
   var self = this;
 
   self.playerElement = createHtml(`<div id="player-div">
-    <img src="../version-1/images for the game/archer/archer.png">
+    <img src="./version-1/images for the game/archer/archer.png">
     </div>`
   );
 

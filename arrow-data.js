@@ -9,8 +9,10 @@ function Arrow (parentElement, playerPositionX, playerPositionY) {
 
   self.x = playerPositionX;
   self.y = playerPositionY + 25;
+  self.height = document.body.clientHeight * 0.05;
+  self.width = self.height;
 
-  self.speed = SPEED;
+  self.speed =  4 * SPEED;
   self.img = null;
   self.arrowElement = null;
 
@@ -23,10 +25,9 @@ function Arrow (parentElement, playerPositionX, playerPositionY) {
 Arrow.prototype.build = function (parentElement) {
   var self = this;
 
-  self.arrowElement  = createHtml(`<div id="arrow-div">
-    <img src="../version-1/images for the game/arrow/Arrow.gif">
-    </div>`
-  );
+  self.arrowElement = createHtml(`<div id="arrow-div">
+    <img src="./version-1/images for the game/arrow/Arrow.gif" height="` + self.height + `" width="` + self.width + `">
+    </div>`);
 
   self.parentElement.appendChild(self.arrowElement);
 }
@@ -42,4 +43,10 @@ Arrow.prototype.render = function() {
   var self = this;
   self.arrowElement.style.left = self.x + "px";
   self.arrowElement.style.top = self.y + "px";
+};
+
+
+Arrow.prototype.destroy = function() {
+  var self = this;
+  self.arrowElement.remove();
 };

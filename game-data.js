@@ -12,7 +12,7 @@ function Game (parentElement) {
   self.player = null;
 
   self.arrow = null;
-  self.arrowsLeft = 20;
+  self.arrowsLeft = 10;
   
   self.balloons = [];
 
@@ -21,10 +21,14 @@ function Game (parentElement) {
   self.score = 0;
 };
 
+
 //---------------------------- Creates the game -------------------------//
 
 Game.prototype.build = function () {
   var self = this;
+
+
+  //------------------------- Will need to add this div somewhere <div id="counter-div">Arrows: 20</div> -----------------------//
 
   self.gameScreenElement = createHtml(`<div id="game-screen">
     </div>`
@@ -52,13 +56,13 @@ Game.prototype.handleActions = function (event) {
   var self = this;
   console.log(event.key);
   
-  if (event.key === ' ') {
+  if (event.key === 'k') {
     self.shootArrow();
   }
 
-  if (event.key === 'ArrowUp') {
+  if (event.key === 'w') {
     self.player.direction = 'up';
-  } else if (event.key === 'ArrowDown') {
+  } else if (event.key === 's') {
     self.player.direction = 'down';
   }
 
@@ -77,12 +81,16 @@ Game.prototype.onEnded = function (cb) {
 
 Game.prototype.isWin = function() {
   var self = this;
+  
+  var finalScore = self.score;
+
   if (self.balloons.length === 0) {
     return true;
   } else {
     return false;
   }
 };
+
 
 //------------------ Creates 10 Balloon objects and adds them to the balloons array ------------//
 
@@ -123,30 +131,55 @@ Game.prototype.createArrow = function () {
 
 Game.prototype.checkCollision = function () {
   var self = this;
-
+  
   if (self.arrow && self.arrow.x > document.body.clientWidth) {
+    self.arrow.destroy();
     self.arrow = null;
   };
 
-  self.balloons.forEach(function(balloon) {
-    if (balloon.y <= 0) {
+  self.balloons.forEach(function(balloon, idx) {
+    if (balloon.y <= 0 - balloon.height) {
       balloon.y = document.body.clientHeight;
+    }
+    if (balloon.y > document.body.clientHeight && balloon.hasCollided) {
+      balloon.destroy();
+      self.balloons.splice(idx, 1);
     }
   });
 
-    if (self.player.y <= 0) {
-      self.player.y =0
-    } else if (self.player.y >= document.body.clientHeight) {
-      self.player.y = document.body.clientHeight;
+  if (self.player.y <= 0) {
+    self.player.y =0
+  } else if (self.player.y >= document.body.clientHeight - self.player.size) {
+    self.player.y = document.body.clientHeight - self.player.size;
+  }
 
-    }
-  };
-  // if (arrow.move() === balloon.move()) {
-  //   Balloon.prototype.hasCollided = true;
-  // } else {
-  //   Balloon.prototype.hasCollided = false;
-  // }
+  if (self.arrow) {
+    var arrowSides = { 
+      top: self.arrow.y,
+      bottom: self.arrow.y + self.arrow.height,
+      left: self.arrow.x,
+      right: self.arrow.x + self.arrow.width
+    };
 
+    self.balloons.forEach(function (balloon, idx){
+      if (balloon.hasCollided) {
+        return;
+      }
+      var balloonSides ={
+        top: balloon.y,
+        bottom: balloon.y + balloon.height/2,
+        left: balloon.x + 20,
+        right: balloon.x + balloon.width - 20
+      }
+
+      if (balloonSides.left < arrowSides.right && arrowSides.left < balloonSides.right && balloonSides.top < arrowSides.bottom && arrowSides.top < balloonSides.bottom) {
+          balloon.hasCollided = true;
+          self.score += 10;
+          // console.log(self.balloons.length, "Collision!");
+        }
+    });
+  }
+};
 
 
 //---------------- Checks if the game has ended ------------------//
@@ -210,3 +243,11 @@ Game.prototype.start = function () {
     }
   }, 10)
 };
+
+
+//---------------------- Destroys the game ----------------------//
+
+// Game.prototype.destroy = function () {
+//   var self = this;
+//   self.gameScreenElement.remove();
+// }

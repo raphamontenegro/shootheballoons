@@ -104,6 +104,14 @@ button {
   position: relative;
 }
 
+#counter-div {
+  text-align: left;
+  font-size: 18px;
+  font-family: helvetica;
+  font-weight: bold;
+  color: darkolivegreen;
+}
+
 #player-div {
   position: absolute;
 }
@@ -115,14 +123,14 @@ button {
   position: absolute;
 }
 #arrow-div img {
-  height: 2vh;
+  /* height: 5vh; */
 }
 
 #balloon-div {
   position: absolute;
 }
 #balloon-div img{
-  height: 10vh;
+  /* height: 10vh; */
 
 }
 
