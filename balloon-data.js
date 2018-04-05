@@ -28,7 +28,7 @@ Balloon.prototype.build = function () {
   var self = this;
 
   self.balloonElement = createHtml(`<div id="balloon-div">
-    <img src="./version-1/images for the game/balloon/balloon-option-1.png" height="`+self.height+`" width="`+self.width+`">
+    <img src="../version-1/images for the game/balloon/balloon-option-1.png" height="`+self.height+`" width="`+self.width+`">
     </div>`);
 
   self.parentElement.appendChild(self.balloonElement);

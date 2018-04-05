@@ -26,7 +26,7 @@ Arrow.prototype.build = function (parentElement) {
   var self = this;
 
   self.arrowElement = createHtml(`<div id="arrow-div">
-    <img src="./version-1/images for the game/arrow/Arrow.gif" height="` + self.height + `" width="` + self.width + `">
+    <img src="../version-1/images for the game/arrow/Arrow.gif" height="` + self.height + `" width="` + self.width + `">
     </div>`);
 
   self.parentElement.appendChild(self.arrowElement);

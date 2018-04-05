@@ -55,36 +55,21 @@ function main () {
 
   //----------------Adds the the game div with the whole game.-----------------//
 
-    
-  var gameScreen = null;
-  var playerDiv = null;
-  var arrowDiv = null;
-  var balloonDiv = null;
-  var handleKeyDown = null;
-
   function buildGameScreen() {
     var game = new Game(mainContent);
     game.build();
   
-    game.onEnded(function(isWin) {
-      endGame(isWin);
+    game.onEnded(function(isWin, score) {
+      endGame(isWin, score);
     });
   };
-
-
-  //--------------- Kills the game screen -----------------//
-
-  function destroyGameScreen() {
-   // gameScreen.remove();
-    document.removeEventListener("keydown", handleKeyDown);
-  };
-
+  
 
   //------------ Finishes the game and loads the End Game screen --------------------//
 
-  function endGame(isWin) {
-    destroyGameScreen();
-    buildEndGameScreen(isWin);
+  function endGame(isWin, score) {
+    // destroyGameScreen();
+    buildEndGameScreen(isWin, score);
   };
 
   var endGameScreen = null;
@@ -92,10 +77,11 @@ function main () {
 
   //---------- creates the end game screen ---------------//
 
-  function buildEndGameScreen(isWin) {
+  function buildEndGameScreen(isWin, score) {
       if (isWin) {
       endGameScreen = createHtml(` <div id="end-game">
       <h2 class="win">Yaaaaay!! You rock!</h2>
+      <h2>You scored `+score+`</h2>
        <div class ="button-div"><button>Click here to play again</button></div>
     </div>`);
     } else {

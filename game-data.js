@@ -30,12 +30,23 @@ Game.prototype.build = function () {
 
   //------------------------- Will need to add this div somewhere <div id="counter-div">Arrows: 20</div> -----------------------//
 
-  self.gameScreenElement = createHtml(`<div id="game-screen">
-    </div>`
-  );
+  self.gameScreenElement = createHtml(`
+    <div id="game-screen">
+      <div class="arrows">
+        <span class="label">Arrows: </span>
+        <span class="value"></span>
+      </div> 
+      <div class="score">
+        <span class="label">Score: </span>
+        <span class="value">0</span>
+      </div> 
+    </div>`);
   
 
   self.parentElement.appendChild(self.gameScreenElement);
+  self.arrowsLeftElement = self.gameScreenElement.querySelector('.arrows .value');
+  self.scoreElement = self.gameScreenElement.querySelector(".score .value");
+
 
   self.handleKeyDown = function (event) {
     self.handleActions(event);
@@ -82,9 +93,8 @@ Game.prototype.onEnded = function (cb) {
 Game.prototype.isWin = function() {
   var self = this;
   
-  var finalScore = self.score;
 
-  if (self.balloons.length === 0) {
+  if (self.balloons.length === 0 || self.score >= 100) {
     return true;
   } else {
     return false;
@@ -96,8 +106,6 @@ Game.prototype.isWin = function() {
 
 Game.prototype.createBalloons = function () {
   var self = this;
-
-  
 
   for (var i = 0; i < 10; i++) {
     self.balloons.push(new Balloon(self.gameScreenElement));
@@ -114,6 +122,7 @@ Game.prototype.shootArrow = function () {
     console.log("ok")
     self.createArrow();
     self.arrowsLeft -= 1;
+    self.arrowsLeftElement.innerText = self.arrowsLeft;
   }
 };
 
@@ -147,8 +156,8 @@ Game.prototype.checkCollision = function () {
     }
   });
 
-  if (self.player.y <= 0) {
-    self.player.y =0
+  if (self.player.y <= 0 + (document.body.clientHeight * 0.05)) {
+    self.player.y = 0 + (document.body.clientHeight * 0.05);
   } else if (self.player.y >= document.body.clientHeight - self.player.size) {
     self.player.y = document.body.clientHeight - self.player.size;
   }
@@ -175,6 +184,7 @@ Game.prototype.checkCollision = function () {
       if (balloonSides.left < arrowSides.right && arrowSides.left < balloonSides.right && balloonSides.top < arrowSides.bottom && arrowSides.top < balloonSides.bottom) {
           balloon.hasCollided = true;
           self.score += 10;
+          self.scoreElement.innerText = self.score;
           // console.log(self.balloons.length, "Collision!");
         }
     });
@@ -186,7 +196,11 @@ Game.prototype.checkCollision = function () {
 
 Game.prototype.isOver = function () {
   var self = this;
-  if (self.balloons.length === 0 || self.arrowsLeft === 0) {
+
+  if (self.balloons.length === 0 && self.arrowsLeft != 0) {
+    self.createBalloons();
+
+  } else if (self.balloons.length === 0 && !self.arrow || self.arrowsLeft === 0) {
     console.log("ended");
     return true;
   } else {
@@ -233,13 +247,16 @@ Game.prototype.render = function () {
 
 Game.prototype.start = function () {
   var self = this;
+  self.arrowsLeftElement.innerText = self.arrowsLeft;
   self.intervalId = window.setInterval(function (){
     self.update();
     self.render();
     //debugger;
     if (self.isOver()) {
-      self.callback(self.isWin());
       clearInterval(self.intervalId);
+      // document.removeEventListener("keydown", self.handleKeyDown);
+      self.destroy()
+      self.callback(self.isWin(), self.score);
     }
   }, 10)
 };
@@ -247,7 +264,7 @@ Game.prototype.start = function () {
 
 //---------------------- Destroys the game ----------------------//
 
-// Game.prototype.destroy = function () {
-//   var self = this;
-//   self.gameScreenElement.remove();
-// }
+Game.prototype.destroy = function () {
+  var self = this;
+  self.gameScreenElement.remove();
+}

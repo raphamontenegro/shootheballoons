@@ -23,7 +23,7 @@ Player.prototype.build = function () {
   var self = this;
 
   self.playerElement = createHtml(`<div id="player-div">
-    <img src="./version-1/images for the game/archer/archer.png">
+    <img src="../version-1/images for the game/archer/archer.png">
     </div>`
   );
 

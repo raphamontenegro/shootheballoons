@@ -104,7 +104,8 @@ button {
   position: relative;
 }
 
-#counter-div {
+.arrows,
+.score {
   text-align: left;
   font-size: 18px;
   font-family: helvetica;
